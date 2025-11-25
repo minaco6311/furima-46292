@@ -27,16 +27,16 @@ Things you may want to cover:
 # テーブル設計
 
 ## users テーブル
-| Column            | Type   | Options           |
-|------------------|--------|-------------------|
-| nickname         | string | null: false       |
-| email            | string | null: false, unique: true |
-| password         | string | null: false       |
-| last_name        | string | null: false       |
-| first_name       | string | null: false       |
-| last_name_kana   | string | null: false       |
-| first_name_kana  | string | null: false       |
-| birthday         | date   | null: false       |
+| Column            | Type   | Options                        |
+|------------------|--------|--------------------------------|
+| nickname         | string | null: false                    |
+| email            | string | null: false, unique: true      |
+| password         | string | null: false                    |
+| last_name        | string | null: false                    |
+| first_name       | string | null: false                    |
+| last_name_kana   | string | null: false                    |
+| first_name_kana  | string | null: false                    |
+| birthday         | date   | null: false                    |
 
 ### Association
 - has_many :items  
@@ -44,17 +44,17 @@ Things you may want to cover:
 
 
 ## items テーブル
-| Column              | Type    | Options                        |
-|--------------------|---------|--------------------------------|
-| item_name          | string  | null: false                    |
-| item_detail        | text    | null: false                    |
-| item_category      | integer | null: false                    |
-| item_condition     | integer | null: false                    |
-| shipping_cost      | integer | null: false                    |
-| shipping_area      | integer | null: false                    |
-| delivery_time      | integer | null: false                    |
-| price              | integer | null: false                    |
-| user_id            | integer | null: false, foreign_key: true |
+| Column              | Type       | Options                        |
+|--------------------|------------|--------------------------------|
+| item_name          | string     | null: false                    |
+| item_detail        | text       | null: false                    |
+| item_category_id   | integer    | null: false                    |
+| item_condition_id  | integer    | null: false                    |
+| shipping_cost_id   | integer    | null: false                    |
+| shipping_area_id   | integer    | null: false                    |
+| delivery_time_id   | integer    | null: false                    |
+| price              | integer    | null: false                    |
+| user               | references | null: false, foreign_key: true |
 
 ### Association
 - belongs_to :user  
@@ -62,10 +62,10 @@ Things you may want to cover:
 
 
 ## orders テーブル
-| Column   | Type    | Options                         |
-|---------|---------|---------------------------------|
-| item_id | integer | null: false, foreign_key: true  |
-| user_id | integer | null: false, foreign_key: true  |
+| Column | Type       | Options                        |
+|--------|------------|--------------------------------|
+| item   | references | null: false, foreign_key: true |
+| user   | references | null: false, foreign_key: true |
 
 ### Association
 - belongs_to :user  
@@ -74,15 +74,15 @@ Things you may want to cover:
 
 
 ## shipping_addresses テーブル
-| Column        | Type    | Options                        |
-|--------------|---------|--------------------------------|
-| post_code     | string  | null: false                    |
-| shipping_area | integer | null: false                    |
-| city          | string  | null: false                    |
-| address       | string  | null: false                    |
-| building_name | string  |                                |
-| tel_number    | string  | null: false                    |
-| order_id      | integer | null: false, foreign_key: true |
+| Column           | Type       | Options                        |
+|------------------|------------|--------------------------------|
+| post_code        | string     | null: false                    |
+| shipping_area_id | integer    | null: false                    |
+| city             | string     | null: false                    |
+| address          | string     | null: false                    |
+| building_name    | string     |                                |
+| tel_number       | string     | null: false                    |
+| order            | references | null: false, foreign_key: true |
 
 ### Association
-- belongs_to :order
+- belongs_to :order  
