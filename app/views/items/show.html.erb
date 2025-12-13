@@ -25,18 +25,19 @@
       </span>
     </div>
 
-        <%# ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう %>
+      <%# ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう %>
 
-        <% if user_signed_in? && current_user.id == @item.user_id %>
+      <% if user_signed_in? %>
+        <% if current_user.id == @item.user_id %>
           <%# ログインしていて、かつ自分が出品した商品 → 編集・削除ボタンを表示 %>
           <%= link_to "商品の編集", "#", method: :get, class: "item-red-btn" %>
           <p class="or-text">or</p>
-          <%= link_to "削除", "#", data: { turbo_method: :delete }, class: "item-destroy" %>
-
-        <% elsif user_signed_in? && current_user.id != @item.user_id %>
+          <%= link_to "削除", item_path(@item), data: { turbo_method: :delete }, class: "item-destroy" %>
+        <% else %>
           <%# ログインはしているが、自分が出品していない商品 → 購入ボタンのみ表示 %>
           <%= link_to "購入画面に進む", "#", class: "item-red-btn" %>
         <% end %>
+      <% end %>
 
     <%# //ログインしているユーザーと出品しているユーザーが、同一人物の場合と同一人物ではない場合で、処理を分けましょう %>
 
@@ -107,9 +108,7 @@
       後ろの商品 ＞
     </a>
   </div>
-  <%# 詳細ページで表示されている商品のカテゴリー名を表示しましょう %>
   <a href="#" class="another-item"><%= @item.item_category.name %>をもっと見る</a>
-  <%# //詳細ページで表示されている商品のカテゴリー名を表示しましょう %>
 </div>
 
 <%= render "shared/footer" %>
