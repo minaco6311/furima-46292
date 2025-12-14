@@ -1,5 +1,7 @@
 class ItemsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_item, only: [:show, :edit, :update, :destroy]
+  before_action :move_to_index, only: [:edit, :update, :destroy]
 
   def index
     @items = Item.order(created_at: :desc)
@@ -10,21 +12,30 @@ class ItemsController < ApplicationController
   end
 
   def show
-    @item = Item.find(params[:id])
+  end
+
+  def edit
+  end
+
+  def update
+    if @item.update(item_params)
+      redirect_to item_path(@item)
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def create
-    @item = Item.new(item_params)
+    @item = Item.new(item_params.merge(user_id: current_user.id))
     if @item.save
-      redirect_to root_path # 保存できたらトップへ
+      redirect_to root_path
     else
-      render :new, status: :unprocessable_entity # 失敗ならnewへ戻す
+      render :new, status: :unprocessable_entity
     end
   end
 
   def destroy
-    item = Item.find(params[:id])
-    item.destroy if item.user_id == current_user.id
+    @item.destroy
     redirect_to root_path
   end
 
@@ -35,6 +46,14 @@ class ItemsController < ApplicationController
       :item_name, :item_detail, :price, :image,
       :item_category_id, :item_condition_id,
       :shipping_cost_id, :shipping_area_id, :delivery_time_id
-    ).merge(user_id: current_user.id)
+    )
+  end
+
+  def set_item
+    @item = Item.find(params[:id])
+  end
+
+  def move_to_index
+    redirect_to root_path unless current_user.id == @item.user_id
   end
 end
