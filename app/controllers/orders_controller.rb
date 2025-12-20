@@ -27,11 +27,11 @@ class OrdersController < ApplicationController
 
         @order_address.save
         redirect_to root_path
-      rescue Payjp::PayjpError => e
-        Rails.logger.error "PAYJP ERROR: #{e.message}"
+      rescue Payjp::PayjpError
         flash.now[:alert] = "カード情報を確認してください"
         render :index, status: :unprocessable_entity
       end
+
     else
       render :index, status: :unprocessable_entity
     end

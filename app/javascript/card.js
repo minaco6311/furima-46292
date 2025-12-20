@@ -6,7 +6,12 @@ const pay = () => {
   if (form.dataset.payjpInitialized === "true") return;
   form.dataset.payjpInitialized = "true";
 
-  const payjp = Payjp("pk_test_6ba99e2e6c3d939a2a85e0c1");
+  const publicKey = document
+    .querySelector('meta[name="payjp-public-key"]')
+    .getAttribute("content");
+
+  const payjp = Payjp(publicKey);
+
   const elements = payjp.elements();
 
   const numberElement = elements.create("cardNumber");
