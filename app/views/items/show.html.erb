@@ -7,15 +7,16 @@
       <%= @item.item_name %>
     </h2>
     <div class="item-img-content">
-      <%= image_tag  @item.image,class:"item-box-img" %>
-      <%# 商品が売れている場合は、sold outを表示しましょう（購入機能実装後に条件分岐をつける） %>
-      <%#
-      <div class="sold-out">
-        <span>Sold Out!!</span>
-      </div>
-      %>
-      <%# //商品が売れている場合は、sold outを表示しましょう %>
+      <%= image_tag @item.image, class: "item-box-img" %>
+
+      <%# 商品が売れている場合は、Sold Out を表示 %>
+      <% if @item.order.present? %>
+        <div class="sold-out">
+          <span>Sold Out!!</span>
+        </div>
+      <% end %>
     </div>
+
     <div class="item-price-box">
       <span class="item-price">
         ¥ <%= @item.price %>
@@ -26,14 +27,15 @@
     </div>
 
       <% if user_signed_in? %>
-        <% if current_user.id == @item.user_id %>
-          <%# ログインしていて、かつ自分が出品した商品 → 編集・削除ボタンを表示 %>
+        <% if current_user.id == @item.user_id && @item.order.blank? %>
+          <%# ログインしていて、かつ自分が出品した商品、かつ売れていない → 編集・削除ボタンを表示 %>
           <%= link_to "商品の編集", edit_item_path(@item), class: "item-red-btn" %>
           <p class="or-text">or</p>
           <%= link_to "削除", item_path(@item), data: { turbo_method: :delete }, class: "item-destroy" %>
-        <% else %>
-          <%# ログインはしているが、自分が出品していない商品 → 購入ボタンのみ表示 %>
-          <%= link_to "購入画面に進む", "#", class: "item-red-btn" %>
+
+        <% elsif current_user.id != @item.user_id && @item.order.blank? %>
+          <%# ログインはしているが、自分が出品していない商品、かつ売れていない → 購入ボタンのみ表示 %>
+          <%= link_to "購入画面に進む", item_orders_path(@item), data: { turbo: false }, class: "item-red-btn" %>
         <% end %>
       <% end %>
 

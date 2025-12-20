@@ -11,7 +11,7 @@ class Item < ApplicationRecord
 
   belongs_to :user
 
-  # has_one :order  # 購入機能実装時に再度追加
+  has_one :order # 1商品は1回だけ購入される想定
 
   with_options presence: true do
     validates :image
