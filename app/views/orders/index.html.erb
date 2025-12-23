@@ -15,9 +15,10 @@
         </h2>
 
         <div class='buy-item-price'>
-          <p class='item-price-text'>¥<%= number_with_delimiter(@item.price) %></p>
-          <p class='item-payment-price'>¥<%= number_with_delimiter(@item.price) %></p>
-
+          <p class='item-price-text'>
+            ¥<%= number_with_delimiter(@item.price) %>
+            <span class="item-postage"><%= @item.shipping_cost.name %></span>
+  </p>
         </div>
       </div>
     </div>
