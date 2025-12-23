@@ -15,27 +15,35 @@ class OrdersController < ApplicationController
   def create
     @order_address = OrderAddress.new(order_params)
 
-    if @order_address.valid?
-      begin
-        Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
+    unless @order_address.valid?
+      Rails.logger.debug "VALIDATION ERROR: #{@order_address.errors.full_messages}"
+      flash.now[:alert] = @order_address.errors.full_messages.join(", ")
+      return render :index, status: :unprocessable_entity
+    end
 
-        Payjp::Charge.create(
-          amount: @item.price,
-          card: @order_address.token,
-          currency: "jpy"
-        )
+    begin
+      Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
 
-        @order_address.save
-        redirect_to root_path
-      rescue Payjp::PayjpError
-        flash.now[:alert] = "カード情報を確認してください"
-        render :index, status: :unprocessable_entity
+      Payjp::Charge.create(
+        amount: @item.price,
+        card: @order_address.token,   # ← card を使う（重要）
+        currency: "jpy"
+      )
+
+      unless @order_address.save
+        Rails.logger.debug "SAVE ERROR: #{@order_address.errors.full_messages}"
+        flash.now[:alert] = "購入情報の保存に失敗しました"
+        return render :index, status: :unprocessable_entity
       end
 
-    else
+      redirect_to root_path
+    rescue Payjp::PayjpError => e
+      Rails.logger.debug "PAYJP ERROR: #{e.class} / #{e.message}"
+      flash.now[:alert] = "カード情報を確認してください"
       render :index, status: :unprocessable_entity
     end
   end
+
 
   private
 
