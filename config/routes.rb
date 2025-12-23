@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     resources :orders, only: [:index, :create]
   end
 
-
+  get "/api/prompts", to: proc { [204, {}, [""]] }
   # Defines the root path route ("/")
   # root "posts#index"
 end
