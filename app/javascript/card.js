@@ -14,21 +14,23 @@ const pay = () => {
   numberElement.mount("#number-form");
   expiryElement.mount("#expiry-form");
   cvcElement.mount("#cvc-form");
+
   form.addEventListener("submit", (e) => {
-    e.preventDefault();
+  e.preventDefault();
+
     payjp.createToken(numberElement).then((response) => {
-      if (response.error) {
-      } else {
-        const token = response.id;
-        // ✅ このフォーム内だけを対象にして増殖防止
-        const existingToken = form.querySelector('input[name="token"]');
-        if (existingToken) existingToken.remove();
-        const tokenObj = `<input value="${token}" type="hidden" name="token">`;
-        form.insertAdjacentHTML("beforeend", tokenObj);
-        form.submit();
-      }
+    if (response.error) {
+      form.submit(); 
+      return;
+    }
+
+      const tokenInput = document.getElementById("token");
+      tokenInput.value = response.id;
+
+      form.submit();
     });
   });
-};
+  };
+
 window.addEventListener("turbo:load", pay);
 window.addEventListener("turbo:render", pay);
